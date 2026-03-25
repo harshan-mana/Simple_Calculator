@@ -1,66 +1,60 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f4f8; 
+    background-color: #add8e6; 
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
 }
-.calculator-container {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    width: 90%;
-    max-width: 500px;
-    text-align: center;
+.calculator {
+    width: 320px;
+    background-color: #1a1a1a;
+    border-radius: 25px;
+    padding: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
 }
-h1 {
-    color: #333;
-    margin-bottom: 25px;
-}
-.calculator-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 25px;
-}
-input, select, button {
-    padding: 12px;
-    font-size: 1rem;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    transition: all 0.3s;
-}
-input {
-    flex: 1; 
-    min-width: 140px;
-}
-input:focus, select:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0,123,255,0.3);
-}
-button {
-    background-color: #007bff; 
+.display {
     color: white;
+    text-align: right;
+    padding: 25px 10px;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+#previous-op { color: #888; font-size: 1rem; min-height: 1.2rem; }
+#current-op { font-size: 2.8rem; font-weight: 300; }
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+.btn {
+    height: 62px;
+    width: 62px;
+    border-radius: 50%;
     border: none;
+    font-size: 1.4rem;
     cursor: pointer;
-    font-weight: bold;
-    min-width: 120px;
+    background-color: #333;
+    color: white;
+    transition: background 0.2s;
 }
-button:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
+.btn:active { background-color: #555; }
+
+.btn-op { background-color: #ff9f0a; }
+.btn-clear { background-color: #a5a5a5; color: black; }
+.btn-equals { 
+    background-color: #ff9f0a; 
+    grid-row: span 2; 
+    height: 136px; 
+    border-radius: 35px; 
 }
-.result-display {
-    border-top: 2px solid #eee;
-    padding-top: 20px;
-}
-#output {
-    color: #28a745; 
-    font-weight: bold;
+.btn-zero { 
+    grid-column: span 2; 
+    width: 136px; 
+    border-radius: 35px; 
+    text-align: left; 
+    padding-left: 25px; 
 }
