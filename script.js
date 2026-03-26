@@ -13,7 +13,7 @@ function updateDisplay() {
 
 // 2. CORE LOGIC FUNCTIONS
 function appendNumber(number) {
-    // ❌ Ignore decimal input completely
+    // ❌ Block decimal input completely
     if (number === '.') return;
 
     if (currentInput === '0') {
@@ -37,7 +37,15 @@ function deleteLast() {
 }
 
 function appendOperator(op) {
+    // ❌ Prevent operation if current input somehow has decimal
+    if (currentInput.includes('.')) {
+        alert("Only integers are allowed");
+        clearDisplay();
+        return;
+    }
+
     if (operator !== null) compute();
+
     operator = op;
     previousInput = currentInput + ' ' + op;
     currentInput = '0';
@@ -47,7 +55,13 @@ function appendOperator(op) {
 function compute() {
     let result;
 
-    // ✅ Use parseInt instead of parseFloat
+    // ❌ Strict check: reject any decimal numbers
+    if (currentInput.includes('.') || previousInput.includes('.')) {
+        alert("Only integers are allowed");
+        clearDisplay();
+        return;
+    }
+
     const prev = parseInt(previousInput);
     const current = parseInt(currentInput);
 
@@ -63,7 +77,7 @@ function compute() {
                 clearDisplay();
                 return;
             }
-            // ✅ Integer division (floor)
+            // ✅ Integer division only
             result = Math.floor(prev / current);
             break;
         default: return;
@@ -75,11 +89,11 @@ function compute() {
     updateDisplay();
 }
 
-// 3. WINDOWS KEYBOARD SUPPORT
+// 3. KEYBOARD SUPPORT
 window.addEventListener('keydown', (e) => {
-    if (e.key >= 0 && e.key <= 9) appendNumber(e.key);
+    if (e.key >= '0' && e.key <= '9') appendNumber(e.key);
 
-    // ❌ Disable decimal key
+    // ❌ Block decimal key
     if (e.key === '.') return;
 
     if (e.key === '=' || e.key === 'Enter') compute();
@@ -95,9 +109,9 @@ window.addEventListener('keydown', (e) => {
 document.querySelectorAll('.btn').forEach(button => {
     button.addEventListener('touchstart', function(e) {
         e.currentTarget.style.filter = "brightness(1.5)";
-    }, {passive: true});
+    }, { passive: true });
 
     button.addEventListener('touchend', function(e) {
         e.currentTarget.style.filter = "brightness(1)";
-    }, {passive: true});
+    }, { passive: true });
 });
