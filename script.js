@@ -13,10 +13,12 @@ function updateDisplay() {
 
 // 2. CORE LOGIC FUNCTIONS
 function appendNumber(number) {
-    if (currentInput === '0' && number !== '.') {
+    // ❌ Ignore decimal input completely
+    if (number === '.') return;
+
+    if (currentInput === '0') {
         currentInput = number;
     } else {
-        if (number === '.' && currentInput.includes('.')) return;
         currentInput += number;
     }
     updateDisplay();
@@ -44,8 +46,10 @@ function appendOperator(op) {
 
 function compute() {
     let result;
-    const prev = parseFloat(previousInput);
-    const current = parseFloat(currentInput);
+
+    // ✅ Use parseInt instead of parseFloat
+    const prev = parseInt(previousInput);
+    const current = parseInt(currentInput);
 
     if (isNaN(prev) || isNaN(current)) return;
 
@@ -59,7 +63,8 @@ function compute() {
                 clearDisplay();
                 return;
             }
-            result = prev / current;
+            // ✅ Integer division (floor)
+            result = Math.floor(prev / current);
             break;
         default: return;
     }
@@ -71,12 +76,13 @@ function compute() {
 }
 
 // 3. WINDOWS KEYBOARD SUPPORT
-// This allows users to use the Numpad or Top Row numbers
 window.addEventListener('keydown', (e) => {
     if (e.key >= 0 && e.key <= 9) appendNumber(e.key);
-    if (e.key === '.') appendNumber('.');
-    if (e.key === '=') compute();
-    if (e.key === 'Enter') compute();
+
+    // ❌ Disable decimal key
+    if (e.key === '.') return;
+
+    if (e.key === '=' || e.key === 'Enter') compute();
     if (e.key === 'Backspace') deleteLast();
     if (e.key === 'Escape') clearDisplay();
     if (e.key === '+') appendOperator('+');
@@ -86,10 +92,8 @@ window.addEventListener('keydown', (e) => {
 });
 
 // 4. TOUCH SCREEN OPTIMIZATION
-// Prevents accidental "double-tap to zoom" on mobile devices
 document.querySelectorAll('.btn').forEach(button => {
     button.addEventListener('touchstart', function(e) {
-        // This ensures the button feels "instant" on mobile
         e.currentTarget.style.filter = "brightness(1.5)";
     }, {passive: true});
 
