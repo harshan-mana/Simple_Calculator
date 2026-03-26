@@ -5,17 +5,14 @@ let operator = null;
 const currentDisplay = document.getElementById('current-op');
 const previousDisplay = document.getElementById('previous-op');
 
-// 1. UPDATE DISPLAY FUNCTION
+// UPDATE DISPLAY
 function updateDisplay() {
     currentDisplay.innerText = currentInput;
     previousDisplay.innerText = previousInput;
 }
 
-// 2. CORE LOGIC FUNCTIONS
+// APPEND NUMBER (ONLY INTEGERS)
 function appendNumber(number) {
-    // ❌ Block decimal input completely
-    if (number === '.') return;
-
     if (currentInput === '0') {
         currentInput = number;
     } else {
@@ -24,6 +21,7 @@ function appendNumber(number) {
     updateDisplay();
 }
 
+// CLEAR
 function clearDisplay() {
     currentInput = '0';
     previousInput = '';
@@ -31,36 +29,25 @@ function clearDisplay() {
     updateDisplay();
 }
 
+// DELETE LAST DIGIT
 function deleteLast() {
     currentInput = currentInput.length > 1 ? currentInput.slice(0, -1) : '0';
     updateDisplay();
 }
 
+// ADD OPERATOR
 function appendOperator(op) {
-    // ❌ Prevent operation if current input somehow has decimal
-    if (currentInput.includes('.')) {
-        alert("Only integers are allowed");
-        clearDisplay();
-        return;
-    }
-
     if (operator !== null) compute();
 
     operator = op;
-    previousInput = currentInput + ' ' + op;
+    previousInput = currentInput;
     currentInput = '0';
     updateDisplay();
 }
 
+// COMPUTE (INTEGER ONLY)
 function compute() {
     let result;
-
-    // ❌ Strict check: reject any decimal numbers
-    if (currentInput.includes('.') || previousInput.includes('.')) {
-        alert("Only integers are allowed");
-        clearDisplay();
-        return;
-    }
 
     const prev = parseInt(previousInput);
     const current = parseInt(currentInput);
@@ -68,19 +55,26 @@ function compute() {
     if (isNaN(prev) || isNaN(current)) return;
 
     switch (operator) {
-        case '+': result = prev + current; break;
-        case '-': result = prev - current; break;
-        case '*': result = prev * current; break;
+        case '+':
+            result = prev + current;
+            break;
+        case '-':
+            result = prev - current;
+            break;
+        case '*':
+            result = prev * current;
+            break;
         case '/':
             if (current === 0) {
                 alert("Cannot divide by zero");
                 clearDisplay();
                 return;
             }
-            // ✅ Integer division only
+            // INTEGER DIVISION
             result = Math.floor(prev / current);
             break;
-        default: return;
+        default:
+            return;
     }
 
     currentInput = result.toString();
@@ -89,14 +83,11 @@ function compute() {
     updateDisplay();
 }
 
-// 3. KEYBOARD SUPPORT
+// KEYBOARD SUPPORT (NO DECIMALS)
 window.addEventListener('keydown', (e) => {
     if (e.key >= '0' && e.key <= '9') appendNumber(e.key);
 
-    // ❌ Block decimal key
-    if (e.key === '.') return;
-
-    if (e.key === '=' || e.key === 'Enter') compute();
+    if (e.key === 'Enter' || e.key === '=') compute();
     if (e.key === 'Backspace') deleteLast();
     if (e.key === 'Escape') clearDisplay();
     if (e.key === '+') appendOperator('+');
@@ -105,7 +96,7 @@ window.addEventListener('keydown', (e) => {
     if (e.key === '/') appendOperator('/');
 });
 
-// 4. TOUCH SCREEN OPTIMIZATION
+// TOUCH EFFECT
 document.querySelectorAll('.btn').forEach(button => {
     button.addEventListener('touchstart', function(e) {
         e.currentTarget.style.filter = "brightness(1.5)";
